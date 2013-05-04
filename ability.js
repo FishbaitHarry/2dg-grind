@@ -1,5 +1,7 @@
+var assert = require('assert');
+
 var BasicAbilities = {
-	defend: new Ability({
+	defend: {
 		description: "Increases defense for 1 round.",
 		speed: 200,
 		resolve: function(context) {
@@ -13,8 +15,8 @@ var BasicAbilities = {
 			
 			actor.emit('defending', context);
 		}
-	}),
-	attack: new Ability({
+	},
+	attack: {
 		description: "Damages the target.",
 		speed: 100,
 		resolve: function(context) {
@@ -36,8 +38,8 @@ var BasicAbilities = {
 			
 			assert(context.hit != undefined, "Attack resolution failure");
 		}
-	}),
-	counterattack: new Ability({
+	},
+	counterattack: {
 		description: "You get ready to strike an opponent as he attacks.",
 		speed: 200,
 		resolve: function(context) {
@@ -52,7 +54,7 @@ var BasicAbilities = {
 			context.actor.once('attack:target', counter);
 			context.actor.on('round:start', expire);
 		}
-	})
+	}
 };
 
 exports.BasicAbilities = BasicAbilities;

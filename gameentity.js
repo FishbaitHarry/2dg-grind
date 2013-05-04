@@ -51,4 +51,4 @@ function extend(obj, params) {
 	};
 }
 
-exports = GameEntity;
+module.exports = GameEntity;

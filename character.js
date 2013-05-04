@@ -1,9 +1,10 @@
-var GameEntity = require('gameentity');
-var BasicAbilities = require('ability').BasicAbilities;
+var GameEntity = require('./gameentity');
+var BasicAbilities = require('./ability').BasicAbilities;
+var Action = require('./battle').Action;
 
 var Character = GameEntity.extend({
 	init: function(params) {
-		GameEntity.super_.init(params);
+		GameEntity.prototype.init.call(this, params);
 		if (!this.attributes) this.attributes = {};
 		if (!this.abilities)  this.abilities = [];
 		if (!this.equipment)  this.equipment = [];
@@ -11,8 +12,8 @@ var Character = GameEntity.extend({
 	},
 	get: function(attr) {
 		var base = this.attributes[attr] || 0;
-		var equip = equipment.reduce(function(a,b){return a+(b[attr]||0);},0);
-		var buff = status.reduce(function(a,b){return a+(b[attr]||0);},0);
+		var equip = this.equipment.reduce(function(a,b){return a+(b[attr]||0);},0);
+		var buff = this.status.reduce(function(a,b){return a+(b[attr]||0);},0);
 		// todo: can be buffered
 		return base + equip + buff;
 	},	
@@ -35,12 +36,16 @@ var Character = GameEntity.extend({
 
 var GenericMonster = Character.extend({
 	defaults: {
-		attributes: {attack:10, defense:10, stamina:10},
+		attributes: {attack:30, defense:50, stamina:50},
 		abilities: BasicAbilities
 	},
-	getActions: function() {
+	getActions: function(battle) {
 		var i = Math.floor(Math.random()*this.abilities.length);
-		return [this.abilities[i]];
+		var ability = this.abilities[i];
+		var j = Math.floor(Math.random()*battle.participants.length);
+		var target = battle.participants[j];
+		var action = new Action({actor: this, ability: ability, target: target});
+		return [action];
 	}
 });
 
