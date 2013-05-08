@@ -1,8 +1,8 @@
 var assert = require('assert');
 
-var BasicAbilities = {
+var BasicAbilities = exports.BasicAbilities = {
 	defend: {
-		description: "Increases defense for 1 round.",
+		description: "Defend - Increases defense for 1 round.",
 		speed: 200,
 		resolve: function(context) {
 			assert(context.actor, "Illegal arguments");
@@ -17,7 +17,7 @@ var BasicAbilities = {
 		}
 	},
 	attack: {
-		description: "Damages the target.",
+		description: "Attack - Damages the target.",
 		speed: 100,
 		resolve: function(context) {
 			assert(context.actor, context.target, "Illegal arguments");
@@ -27,7 +27,7 @@ var BasicAbilities = {
 			var attackValue = context.attackValue || context.actor.get('attack');
 			var defenseValue = context.defenseValue || context.target.get('defense');
 			
-			context.hit = Math.rand() < (attackValue / (attackValue+defenseValue));
+			context.hit = Math.random() < (attackValue / (attackValue+defenseValue));
 			if (context.hit) {
 				var wound = {stamina: -5, defense: -5};
 				context.target.status.push(wound);
@@ -40,7 +40,7 @@ var BasicAbilities = {
 		}
 	},
 	counterattack: {
-		description: "You get ready to strike an opponent as he attacks.",
+		description: "Counterattack - You get ready to strike an opponent as he attacks.",
 		speed: 200,
 		resolve: function(context) {
 			assert(context.actor, "Illegal arguments");
@@ -54,7 +54,14 @@ var BasicAbilities = {
 			context.actor.once('attack:target', counter);
 			context.actor.on('round:start', expire);
 		}
+	},
+	random: function() {
+		var i = Math.floor(Math.random()*3);
+		if (i == 0) { return this.attack }
+		if (i == 1) { return this.defend }
+		if (i == 2) { return this.counterattack }
+	},
+	asArray: function() {
+		return [this.attack,this.defend,this.counterattack];
 	}
 };
-
-exports.BasicAbilities = BasicAbilities;

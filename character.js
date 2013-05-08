@@ -1,14 +1,18 @@
-var GameEntity = require('./gameentity');
+var _ = require('./underscore');
 var BasicAbilities = require('./ability').BasicAbilities;
 var Action = require('./battle').Action;
+var Observable = require('./objectproto').Observable;
 
-var Character = GameEntity.extend({
+var Character = exports.Character = function(params){this.init(params)}
+Character.prototype = _.extend({}, Observable.prototype, {
 	init: function(params) {
-		GameEntity.prototype.init.call(this, params);
-		if (!this.attributes) this.attributes = {};
-		if (!this.abilities)  this.abilities = [];
-		if (!this.equipment)  this.equipment = [];
-		if (!this.status)     this.status = [];
+		var defaults = {
+			attributes: {},
+			abilities: [],
+			equipment: [],
+			status: []
+		}
+		_.extend(this, defaults, params);
 	},
 	get: function(attr) {
 		var base = this.attributes[attr] || 0;
@@ -34,10 +38,14 @@ var Character = GameEntity.extend({
 	
 });
 
-var GenericMonster = Character.extend({
-	defaults: {
-		attributes: {attack:30, defense:50, stamina:50},
-		abilities: BasicAbilities
+var GenericMonster = exports.GenericMonster = function(params){this.init(params)}
+GenericMonster.prototype = _.extend({}, Character.prototype, {
+	init: function(params) {
+		Character.prototype.init.call(this, {
+			name: "Goblin",
+			attributes: {attack:30, defense:50, stamina:50},
+			abilities: BasicAbilities.asArray()
+		});
 	},
 	getActions: function(battle) {
 		var i = Math.floor(Math.random()*this.abilities.length);
@@ -48,6 +56,3 @@ var GenericMonster = Character.extend({
 		return [action];
 	}
 });
-
-exports.Character = Character;
-exports.GenericMonster = GenericMonster;

@@ -9,8 +9,9 @@ var exBattle = new bm.Battle({
 });
 exBattle.resolveCombatRound();
 exBattle.resolveCombatRound();
+exBattle.resolveCombatRound();
+exBattle.resolveCombatRound();
 
-
-console.log('hello harry');
+bm.BattleLogFormatter.consumeLog(exBattle.log);
 //console.log(JSON.stringify(exBattle));
-console.log(JSON.stringify(exBattle.log));
+//console.log(JSON.stringify(exBattle.log));

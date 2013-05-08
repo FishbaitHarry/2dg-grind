@@ -1,8 +1,7 @@
 var BasicAbilities = require('./ability').BasicAbilities;
 var assert = require('assert');
 
-var Battle = function(params){this.init(params);};
-
+var Battle = exports.Battle = function(params){this.init(params);};
 Battle.prototype = {
 	init: function(params) {
 		this.round = 1;
@@ -14,7 +13,6 @@ Battle.prototype = {
 		this.resetCombatRound();
 		this.pushParticipantsActions();
 		this.resolveActions();
-		console.log(this.actions);
 	},
 	/* private */
 	resetCombatRound: function() {
@@ -39,7 +37,7 @@ Battle.prototype = {
 	}
 };
 
-var Action = function(params){this.init(params);}
+var Action = exports.Action = function(params){this.init(params);}
 	/* Action is an instance of ability usage in context. */
 	/* Action is heavily mutable and serves as context and log. */
 	/* Action lives only for a single round of battle. */
@@ -63,15 +61,12 @@ Action.prototype = {
 	/* private */
 };
 
-var BattleLogFormatter = {
+var BattleLogFormatter = exports.BattleLogFormatter = {
 	appender: console.log,
 	consumeLog: function(battleLog) {
 		var action;
-		while (action = battleLog.shift) {
-			appender(action.actor+" used "+action.ability.description+" on "+action.target);
+		while (action = battleLog.shift()) {
+			this.appender(action.actor.name+" used "+action.ability.description+" on "+action.target.name);
 		}
 	}
 }
-
-exports.Battle = Battle;
-exports.Action = Action;
