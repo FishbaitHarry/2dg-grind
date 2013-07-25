@@ -16,10 +16,10 @@ Adventure.prototype = _.extend({}, Observable.prototype, {
 	/* public interface
 	 * returns either current battle or current dialogue
 	 */
-	currentContent: function() {
+	getCurrentContent: function() {
 		return this.plotPointInstance;
 	},
-	serialize: function(){}
+	serialize: function(){},
 	
 	/* private */
 	changePlotPoint: function(plotPoint) {

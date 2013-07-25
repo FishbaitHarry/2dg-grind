@@ -15,3 +15,4 @@ exBattle.resolveCombatRound();
 bm.BattleLogFormatter.consumeLog(exBattle.log);
 //console.log(JSON.stringify(exBattle));
 //console.log(JSON.stringify(exBattle.log));
+console.log();
