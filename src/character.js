@@ -1,4 +1,4 @@
-var _ = require('./underscore');
+var _ = require('underscore');
 var BasicAbilities = require('./ability').BasicAbilities;
 var Action = require('./battle').Action;
 var Observable = require('./objectproto').Observable;
