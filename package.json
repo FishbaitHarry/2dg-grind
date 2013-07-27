@@ -1,0 +1,20 @@
+{
+  "name": "2dg-grind",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app",
+    "test" : "jasmine-node spec"
+  },
+  "dependencies": {
+    "underscore"  : "*"
+  },
+  "devDependencies": {
+    "jasmine-node": "*",
+    "browserify"  : "*"
+  },
+  "repository" : {
+    "type" : "git",
+    "url"  : "https://github.com/FishbaitHarry/2dg-grind.git"
+  }
+}
