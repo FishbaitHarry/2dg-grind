@@ -62,11 +62,10 @@ Action.prototype = {
 };
 
 var BattleLogFormatter = exports.BattleLogFormatter = {
-	appender: console.log,
 	consumeLog: function(battleLog) {
 		var action;
 		while (action = battleLog.shift()) {
-			this.appender(action.actor.name+" used "+action.ability.description+" on "+action.target.name);
+			console.log(action.actor.name+" used "+action.ability.description+" on "+action.target.name);
 		}
 	}
 }

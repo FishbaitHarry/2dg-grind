@@ -3,15 +3,18 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app",
-    "test" : "jasmine-node spec"
+    "start": "beefy ./src/main.js:bundle.js 3000",
+    "guard": "jasmine-node spec --autotest --verbose --watch src",
+    "test" : "jasmine-node spec --verbose"
   },
   "dependencies": {
-    "underscore"  : "*"
+    "underscore"  : "*",
+	"backbone"    : "*"
   },
   "devDependencies": {
     "jasmine-node": "*",
-    "browserify"  : "*"
+    "browserify"  : "*",
+	"beefy" : "*"
   },
   "repository" : {
     "type" : "git",
