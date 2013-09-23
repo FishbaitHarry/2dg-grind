@@ -1,9 +1,11 @@
 var BasicAbilities = require('./ability').BasicAbilities;
 var Battle = require('./battle').Battle;
 var assert = require('assert');
+var _ = require('underscore');
+var Observable = require('./objectproto').Observable;
 
 /*
- * Triggers a 'change' event when currentContent changes.
+ * Triggers a 'change' event when current scene changes.
  */
 var Adventure = exports.Adventure = function(params){this.init(params)}
 Adventure.prototype = _.extend({}, Observable.prototype, {
@@ -16,15 +18,20 @@ Adventure.prototype = _.extend({}, Observable.prototype, {
 	/* public interface
 	 * returns either current battle or current dialogue
 	 */
-	getCurrentContent: function() {
+	getScene: function() {
+		if (!this.plotPointInstance) {
+			var plotPoint = this.currentPlotPoint;
+			this.plotPointInstance = this.instantiatePlotPoint(plotPoint);
+		}
 		return this.plotPointInstance;
 	},
-	serialize: function(){},
+	save: function(){},
+	load: function(json){},
 	
 	/* private */
 	changePlotPoint: function(plotPoint) {
 		this.currentPlotPoint = plotPoint;
-		this.plotPointInstance = this.instantiatePlotPoint(plotPoint);
+		this.plotPointInstance = null;
 		this.emit('change');
 	},
 	instantiatePlotPoint: function(plotPoint) {
@@ -40,21 +47,25 @@ Adventure.prototype = _.extend({}, Observable.prototype, {
 var Dialogue = exports.Dialogue = function(params){this.init(params)}
 Dialogue.prototype = _.extend({}, {
 	init: function(params) {
+		assert(params.adventure != undefined);
+		var nextPlotNumber = params.adventure.currentPlotPoint + 1;
 		var defaults = {
-			talkingCharacter: null,
-			otherCharacters: [],
-			text: 'text here',
-			choices: []
+			actors: [],
+			text: 'Silence...',
+			choices: [{
+				text: 'Next',
+				next: nextPlotNumber
+			}]
 		}
 		_.extend(this, defaults, params);
-		assert(this.adventure != undefined);
 	},
 	choose: function(choiceNumber) {
 		if (!choiceNumber) {
 			choiceNumber = 0;
 		}
 		if (!this.choices) {
-			this.adventure.currentPlotPoint += 1;
+			var next = this.adventure.currentPlotPoint + 1;
+			this.adventure.changePlotPoint(next);
 		} else {
 			var choice = this.choices[choiceNumber];
 			assert(choice != undefined);
@@ -62,12 +73,17 @@ Dialogue.prototype = _.extend({}, {
 			this.adventure.changePlotPoint(choice.next);
 		}
 	}
-}
+	/* private */
+});
 
-var serializedAdventure1 = [
-	{type:'dialogue', text:'welcome to the game'},
-	{type:'dialogue', text:'want tutorial?', choices: [{text:'yes',next:2},{text:'no',next:3}]},
-	{type:'dialogue', text:'no tutorial for you'},
-	{type:'dialogue', text:'welcome to the game'},
-	{type:'battle', participants:['goblin','goblin','main character'], win: 5, lose: 6}
-];
+exports.serializedAdventure1 = {
+	name: 'Example Adventure',
+	description: 'Its so generic it hurts.',
+	plotData: [
+		{type:'dialogue', text:'welcome to the game', actors:[{name:'Jack',icon:'default',description:'a man',active:true}]},
+		{type:'dialogue', text:'want tutorial?', choices: [{text:'yes',next:2},{text:'no',next:3}]},
+		{type:'dialogue', text:'no tutorial for you'},
+		{type:'dialogue', text:'welcome to the game'},
+		{type:'battle', participants:['goblin','goblin','main character'], win: 5, lose: 6}
+	]
+};

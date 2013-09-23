@@ -56,7 +56,7 @@ Action.prototype = {
 		this.resolved = true;
 	},
 	getComputedSpeed: function() {
-		return this.speed + this.ability.speed + this.actor.get('speed');
+		return this.speed + this.ability.speed + this.actor.getAttr('speed');
 	}
 	/* private */
 };

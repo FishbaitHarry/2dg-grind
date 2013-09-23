@@ -1,9 +1,11 @@
-var Adventure = require('../src/adventure');
+var Adventure = require('../src/adventure').Adventure;
+var mockAdv = require('../src/adventure').serializedAdventure1;
+
 describe( "Adventure", function() {
 	var adv;
 
 	beforeEach( function() {
-		adv = new Adventure();
+		adv = new Adventure(mockAdv);
 	});
 
 	it( "provides some basic description", function() {
@@ -13,8 +15,7 @@ describe( "Adventure", function() {
 
 	it( "provides current scene", function() {
 		var scene = adv.getScene();
-		var actions = this.character.getActions();
-		expect(actions.length).toBeGreaterThan(0);
+		expect(scene).toBeDefined();
 	});
 
 	describe( "current scene", function() {
@@ -25,7 +26,7 @@ describe( "Adventure", function() {
 		it( "has a type", function() {
 			var scene = adv.getScene();
 			expect(scene.type).toBeDefined();
-			var allowedType = ['battle','dialog'];
+			var allowedType = ['battle','dialogue'];
 			expect(allowedType.indexOf(scene.type) > -1).toBeTruthy();
 		});
 		it( "has important attrs", function() {

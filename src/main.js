@@ -45,7 +45,7 @@ var OptionsView = InteractiveView.extend({
 	load: function(){console.log('load')},
 	save: function(){console.log('save')},
 });
-var SceneView = Backbone.View.extend({
+var AdventureView = Backbone.View.extend({
 	// expects this.model typeof Adventure
 	initialize: function() {
 		this.choiceBox = new ChoiceBoxView({el: this.$('footer')});
@@ -53,33 +53,52 @@ var SceneView = Backbone.View.extend({
 		this.listenTo(this.model, 'change', this.render);
 	},
 	render: function() {
-		var toRender = this.model.getCurrentContent();
-		this.situationView.model = toRender;
+		var scene = this.model.getScene();
+		this.situationView.model = scene;
 		this.situationView.render();
-		this.choiceBox.choices = toRender.choices;
+		this.choiceBox.choices = scene.choices;
 		this.choiceBox.render();
 	}
 });
 var SituationView = Backbone.View.extend({
+	// expects this.model typeof Scene (actors, text, choices, background)
 	render: function() {
-		this.html('');
+		// clear scene
+		this.$el.html('');
+		// set background (TODO)
+		this.$el;
+		// add actors
+		_.each(this.model.actors, function(actor){
+			$('<img/>')
+			.attr('src', actor.icon)
+			.toggleClass('active', actor.active)
+			.appendTo(this.$el);
+		});
+		// add text
+		$('<div class="scene-text"/>')
+		.html(this.model.text)
+		.appendTo(this.$el);
 	}
 });
 var ChoiceBoxView = InteractiveView.extend({
+	// expects this.choices typeof Array<Choice>
 	choice: function(evt) {
 		var choiceNo = $(evt.target).data('id');
-		
+		this.trigger('choice', choiceNo);
 	},
 	render: function() {
 		var visibility = this.choices && this.choices.length > 0;
 		var container = this.$el.toggle(visibility).html('');
 		_.each(this.choices, function(choice,i) {
 			$('<button type="button" data-action="choice" />')
-			.attr('data-id', i).text(choice.text).append(container);
+			.attr('data-id', i)
+			.text(choice.text)
+			.appendTo(container);
 		});
 	}
 });
 var SummaryView = Backbone.View.extend({
+	// expects this.model typeof Hero(Character)
 	initialize: function() {
 		this.listenTo(this.model, 'change', this.render);
 	},

@@ -1,9 +1,11 @@
-var Character = require('../src/character');
+var Character = require('../src/character').Character;
+var monster = require('../src/character').GenericMonster;
+
 describe( "Character", function() {
 	var character;
 
 	beforeEach( function() {
-		character = new Character();
+		character = new monster();
 	});
 
 	it( "provides some basic description", function() {
@@ -13,13 +15,15 @@ describe( "Character", function() {
 	});
 
 	it( "participates in battle", function() {
-		var actions = character.getActions();
+		var mockBattle = {participants: [character]};
+		var actions = character.getActions(mockBattle);
 		expect(actions.length).toBeGreaterThan(0);
 	});
 
 	it( "can be serialized and deserialized", function() {
 		var json = character.toJSON();
-		expect(json.length).toBeGreaterThan(0);
+		var serialized = JSON.stringify(json);
+		expect(serialized.length).toBeGreaterThan(0);
 		var copy = Character.fromJSON(json);
 		expect(copy instanceof Character).toBeTruthy();
 	});
@@ -32,6 +36,10 @@ describe( "Character", function() {
 			expect(character.getAttr('nonsense')).toBeDefined();
 		});
 		it( "are numeric values", function() {
+			expect(isFinite(character.getAttr('attack'))).toBeTruthy();
+			expect(isFinite(character.getAttr('nonsense'))).toBeTruthy();
+		});
+		it( "have a visible subset", function() {
 			expect(isFinite(character.getAttr('attack'))).toBeTruthy();
 			expect(isFinite(character.getAttr('nonsense'))).toBeTruthy();
 		});

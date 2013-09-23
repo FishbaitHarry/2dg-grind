@@ -28,7 +28,7 @@ describe( "My coding environment", function() {
 
 		expect(exBattle.round).toEqual(5);
 
-		// bm.BattleLogFormatter.consumeLog(exBattle.log);
+		bm.BattleLogFormatter.consumeLog(exBattle.log);
 	});
 
 });
