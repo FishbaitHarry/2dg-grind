@@ -43,9 +43,17 @@ Character.prototype = _.extend({}, Observable.prototype, {
 		}
 		return pojo;
 	},
-	getActions: function(){}
+	getActions: function(){
+		return []; // I have free will, but I choose to oscillate.
+	},
+	getVisibleAttributes: function(){
+		var visibleTypes = ['attack', 'defense', 'speed', 'stamina'];
+		var computed = {};
+		var self = this;
+		_.each(visibleTypes, function(type){ computed[type] = self.getAttr(type); });
+		return computed;
+	}
 	/* private */
-	
 });
 _.extend(Character, {
 	/* static methods */

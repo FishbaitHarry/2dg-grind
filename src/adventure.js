@@ -7,7 +7,7 @@ var Observable = require('./objectproto').Observable;
 /*
  * Triggers a 'change' event when current scene changes.
  */
-var Adventure = exports.Adventure = function(params){this.init(params)}
+var Adventure = exports.Adventure = function Adventure(params){this.init(params)}
 Adventure.prototype = _.extend({}, Observable.prototype, {
 	init: function(params) {
 		var defaults = {
@@ -44,7 +44,7 @@ Adventure.prototype = _.extend({}, Observable.prototype, {
 	},
 });
 
-var Dialogue = exports.Dialogue = function(params){this.init(params)}
+var Dialogue = exports.Dialogue = function Dialogue(params){this.init(params)}
 Dialogue.prototype = _.extend({}, {
 	init: function(params) {
 		assert(params.adventure != undefined);
@@ -80,7 +80,7 @@ exports.serializedAdventure1 = {
 	name: 'Example Adventure',
 	description: 'Its so generic it hurts.',
 	plotData: [
-		{type:'dialogue', text:'welcome to the game', actors:[{name:'Jack',icon:'default',description:'a man',active:true}]},
+		{type:'dialogue', text:'welcome to the game', actors:[{name:'Jack',icon:'jack.jpg',description:'a man',active:true}]},
 		{type:'dialogue', text:'want tutorial?', choices: [{text:'yes',next:2},{text:'no',next:3}]},
 		{type:'dialogue', text:'no tutorial for you'},
 		{type:'dialogue', text:'welcome to the game'},

@@ -23,9 +23,15 @@ battleTest();
 // note: I don't require jquery, it is currently an asset
 // todo: move it to seperate files when it bloats
 var Backbone = require('backbone');
+var _ = require('underscore');
+var Adventure = require('./adventure').Adventure;
+var exampleAdv = require('./adventure').serializedAdventure1;
 
 var SettingsModel = Backbone.Model.extend({
-	defaults: {character:{hp:3, mana:4, swag:2}}
+	defaults: {},
+	initialize: function() {
+		console.log('settings model created');
+	}
 });
 var InteractiveView = Backbone.View.extend({
 	events: {
@@ -37,26 +43,40 @@ var InteractiveView = Backbone.View.extend({
 		this[actionName].call(this,evt);
 	}
 });
+var ModelWatcherView = Backbone.View.extend({
+	setModel: function(model) {
+		this.model = model;
+		model.on('change', this.render.bind(this));
+	},
+	render: function() {
+		console.log("render not implemented!");
+	}
+});
 var OptionsView = InteractiveView.extend({
 	render: function(){
 		// this.$el.text("OPTIONS ARE HERE")
 	},
-	newGame: function(){console.log('newGame')},
+	newGame: function(){
+		this.model.set('character', new cm.GenericMonster());
+		this.model.set('adventure', new Adventure(exampleAdv));
+		console.log('new game');
+	},
 	load: function(){console.log('load')},
 	save: function(){console.log('save')},
 });
-var AdventureView = Backbone.View.extend({
+var AdventureView = ModelWatcherView.extend({
 	// expects this.model typeof Adventure
 	initialize: function() {
 		this.choiceBox = new ChoiceBoxView({el: this.$('footer')});
 		this.situationView = new SituationView({el: this.$('section')});
-		this.listenTo(this.model, 'change', this.render);
+		if (this.model) this.setModel(this.model);
 	},
 	render: function() {
+		if (!this.model) return;
 		var scene = this.model.getScene();
 		this.situationView.model = scene;
 		this.situationView.render();
-		this.choiceBox.choices = scene.choices;
+		this.choiceBox.model = scene;
 		this.choiceBox.render();
 	}
 });
@@ -64,7 +84,7 @@ var SituationView = Backbone.View.extend({
 	// expects this.model typeof Scene (actors, text, choices, background)
 	render: function() {
 		// clear scene
-		this.$el.html('');
+		var container = this.$el.html('');
 		// set background (TODO)
 		this.$el;
 		// add actors
@@ -72,24 +92,26 @@ var SituationView = Backbone.View.extend({
 			$('<img/>')
 			.attr('src', actor.icon)
 			.toggleClass('active', actor.active)
-			.appendTo(this.$el);
+			.appendTo(container);
 		});
 		// add text
 		$('<div class="scene-text"/>')
 		.html(this.model.text)
-		.appendTo(this.$el);
+		.appendTo(container);
 	}
 });
 var ChoiceBoxView = InteractiveView.extend({
-	// expects this.choices typeof Array<Choice>
+	// expects this.model typeof Scene
+	// expects this.model.choices typeof Array<Choice>
 	choice: function(evt) {
 		var choiceNo = $(evt.target).data('id');
-		this.trigger('choice', choiceNo);
+		this.model.choose(choiceNo);
 	},
 	render: function() {
-		var visibility = this.choices && this.choices.length > 0;
+		var choices = this.model.choices;
+		var visibility = choices && choices.length > 0;
 		var container = this.$el.toggle(visibility).html('');
-		_.each(this.choices, function(choice,i) {
+		_.each(choices, function(choice,i) {
 			$('<button type="button" data-action="choice" />')
 			.attr('data-id', i)
 			.text(choice.text)
@@ -97,12 +119,13 @@ var ChoiceBoxView = InteractiveView.extend({
 		});
 	}
 });
-var SummaryView = Backbone.View.extend({
+var SummaryView = ModelWatcherView.extend({
 	// expects this.model typeof Hero(Character)
 	initialize: function() {
-		this.listenTo(this.model, 'change', this.render);
+		if (this.model) this.setModel(this.model);
 	},
 	render: function() {
+		if (!this.model) return;
 		var container = this.$('table').html('');
 		_.each(this.model.getVisibleAttributes(), function(val,key) {
 			container.append('<tr><td>'+key+'</td><td>'+val+'</td></tr>');
@@ -112,9 +135,11 @@ var SummaryView = Backbone.View.extend({
 var MainView = Backbone.View.extend({
 	initialize: function() {
 		this.model = new SettingsModel();
-		this.listenTo(this.model, 'change:character', this.initSummary);
-		this.listenTo(this.model, 'change:adventure', this.initScene);
+		this.listenTo(this.model, 'change:character', this.onCharacterChange);
+		this.listenTo(this.model, 'change:adventure', this.onAdventureChange);
 		this.initOptions();
+		this.initSummary();
+		this.initScene();
 	},
 	initOptions: function() {
 		this.optionsView = new OptionsView({
@@ -123,33 +148,35 @@ var MainView = Backbone.View.extend({
 		});
 	},
 	initSummary: function() {
-		if (this.summaryView) {
-			this.summaryView.remove();
-		}
 		this.summaryView = new SummaryView({
 			el: this.$('aside'),
 			model: this.model.get('character')
 		});
 	},
 	initScene: function() {
-		if (this.sceneView) {
-			this.sceneView.remove();
-		}
-		this.sceneView = new SceneView({
+		this.adventureView = new AdventureView({
 			el: this.$('article'),
 			model: this.model.get('adventure')
 		});
 	},
+	onCharacterChange: function() {
+		this.summaryView.setModel(this.model.get('character'));
+		this.summaryView.render();
+	},
+	onAdventureChange: function() {
+		this.adventureView.setModel(this.model.get('adventure'));
+		this.adventureView.render();
+	},
 	render: function(){
 		this.optionsView.render();
-		if (this.sceneView)
-			this.sceneView.render();
+		if (this.adventureView)
+			this.adventureView.render();
 		if (this.summaryView)
 			this.summaryView.render();
 	}
 });
 $(function(){
 	//kickstarter function
-	console.log("Kickstarting...");
+	console.log("Kickstarting... now!");
 	(new MainView({el: document.body})).render();
 })
