@@ -1,0 +1,44 @@
+* {box-sizing: border-box;}
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+// super crappy layout
+.main, article {
+  display: -webkit-flex;}
+.main {
+  -webkit-flex-direction: row;
+}
+article {
+  -webkit-flex-direction: column;
+}
+header, footer {
+  -webkit-flex: 0 0 auto;
+}
+nav, aside {
+  -webkit-flex: 0 0 100px;
+}
+article, section {
+  -webkit-flex: 1 1 auto;
+}
+
+nav, aside {
+  padding: 10px;
+}
+
+.main {
+  article {
+    section {
+      position: relative;
+      overflow: hidden;
+      img {
+        position: absolute;
+        bottom: 0;
+        opacity: 0.5;
+        &.active {opacity: 1;}
+      }
+    }
+  }
+}

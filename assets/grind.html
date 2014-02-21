@@ -1,29 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>2DG-GRIND</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>2DG-GRIND</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <style type="text/css">
-		* {box-sizing: border-box;}
-		html, body { width: 100%; height: 100%; margin: 0;}
-
-		.main, article {display: -webkit-flex;}
-		.main {-webkit-flex-direction: row;}
-		article {-webkit-flex-direction: column;}
-		header, footer { -webkit-flex: 0 0 auto; }
-		nav, aside { -webkit-flex: 0 0 100px; }
-		article, section { -webkit-flex: 1 1 auto; }
-		
-		nav, aside {
-			padding: 10px;
-		}
-    </style>
+	<link rel="stylesheet" type="text/css" href="main.css">
 	<script src="./jquery-2.0.3.min.js"></script>
 	<script src="../bundle.js"></script>
 </head>
 <body class="main">
-    <nav>
+	<nav>
 		<button type="button" class="btn btn-block" data-action="newGame">
 			<i class="icon-leaf"></i>
 			New Game
@@ -37,17 +23,19 @@
 			Save Game
 		</button>
 	</nav>
-    <article>
-        <header class="hero-unit">
-			<h1>Wonderfully Magical Adventure v0.1</h1>
-			<h6>powered by 2DG-GRIND engine</h6>
-		</header>
-        <section>CONTENT</section>
-        <footer class="well">
-			This is a place for player options.
-		</footer>
-    </article>
-    <aside>
+	<article>
+	<header class="hero-unit">
+		<h1>Wonderfully Magical Adventure v0.1</h1>
+		<h6>powered by 2DG-GRIND engine</h6>
+	</header>
+	<section>
+		This is a place for portraits of characters and readable text.
+	</section>
+	<footer class="well">
+		This is a place for player options.
+	</footer>
+	</article>
+	<aside>
 		<h5>Character Summary</h5>
 		<table class="table table-condensed">
 			<tr><td>hp</td><td>3</td></tr>

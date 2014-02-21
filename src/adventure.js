@@ -80,10 +80,29 @@ exports.serializedAdventure1 = {
 	name: 'Example Adventure',
 	description: 'Its so generic it hurts.',
 	plotData: [
-		{type:'dialogue', text:'welcome to the game', actors:[{name:'Jack',icon:'jack.jpg',description:'a man',active:true}]},
-		{type:'dialogue', text:'want tutorial?', choices: [{text:'yes',next:2},{text:'no',next:3}]},
-		{type:'dialogue', text:'no tutorial for you'},
-		{type:'dialogue', text:'welcome to the game'},
+		{type:'dialogue', text:'Guard: Stop there citizens! I must speak with you.', actors:[
+			{name:'Jack',icon:'img/guard.png',description:'a man',active:true},
+			{name:'Mary',icon:'img/girl.png',description:'woman',active:false},
+			{name:'Som1',icon:'img/thief.png',description:'human',active:false}
+		]},
+		{type:'dialogue', text:'Thief: Give it a rest, scout boy. We are just passing through.', choices: [
+			{text:'Listen to him.',next:3},
+			{text:'Ignore the guard.',next:2}
+		], actors:[
+			{name:'Jack',icon:'img/guard.png',description:'a man',active:false},
+			{name:'Mary',icon:'img/girl.png',description:'woman',active:false},
+			{name:'Som1',icon:'img/thief.png',description:'human',active:true}
+		]},
+		{type:'dialogue', text:'You: We don\'t want to cause trouble, but if you stop us, we will.', actors:[
+			{name:'Jack',icon:'img/guard.png',description:'a man',active:false},
+			{name:'Mary',icon:'img/girl.png',description:'woman',active:true},
+			{name:'Som1',icon:'img/thief.png',description:'human',active:false}
+		]},
+		{type:'dialogue', text:'You: Alright. What is it you want to tell us? Is there something happening in the town?', actors:[
+			{name:'Jack',icon:'img/guard.png',description:'a man',active:false},
+			{name:'Mary',icon:'img/girl.png',description:'woman',active:true},
+			{name:'Som1',icon:'img/thief.png',description:'human',active:false}
+		]},
 		{type:'battle', participants:['goblin','goblin','main character'], win: 5, lose: 6}
 	]
 };
